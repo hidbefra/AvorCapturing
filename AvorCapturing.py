@@ -11,17 +11,6 @@ import shutil
 
 import textract
 
-# __Ablage = r"\ScannAvor"
-#
-# __AvorScanPath = r"C:\Users\franz.hidber\Desktop\Avor"
-# __KundenPath = r"C:\Users\franz.hidber\Desktop\Kunde"
-#
-# __AvorBarcodPatern = {"patern": r"(\d\d-\d{6})#(.*)#(.*)", "AuftragsNr": 1,"typ": 2, "PageNr": 3}
-#
-# __AuftragNrPatern = {"patern": r"(\d\d-\d{6})", "AuftragsNr": 1}
-#
-# __DateinamePatern = {"patern": r"(\d\d-\d{6})(.*)(?:.pdf)","AuftragsNr": 1,"info": 2}
-
 
 def find_regex_on_barcode_in_pdf(path, patern):
     images_from_path = convert_from_path(path)
@@ -80,11 +69,12 @@ if __name__ == "__main__":
         with open('AvorCapturing.ini', 'w') as configfile:
             config.write(configfile)
 
-    config.read('AvorCapturing.ini')
+    config.read('AvorCapturing.ini', encoding='utf-8')
     config.sections()
 
     myDi = MyDirectoryScan.DirectoryIndex()
-    myDi.scan(config['DEFAULT']["KundenPath"])
+    #myDi.scan(config['DEFAULT']["KundenPath"])
+    myDi.loadjson()
 
     for filename in glob.iglob(config['DEFAULT']["AvorScanPath"] + '**/**.pdf', recursive=False):
         #print(filename)
