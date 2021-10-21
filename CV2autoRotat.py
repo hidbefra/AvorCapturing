@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+#quelle https://gist.github.com/russss/922be97d2a65eb534744c5a4054ff88d
 
 def deskew(im, max_skew=10):
     height, width, channels = im.shape
