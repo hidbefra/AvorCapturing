@@ -6,19 +6,23 @@ import json
 
 class DirectoryIndex:
 
+    __EstimateSize = 17000
+
     def __init__(self):
         self.dict = {}
-        self.pattern = {"pattern": r"(.*\\)(\d\d-\d{6})([\w\d\s]*)(\\.*)?", "pfad": 1, "AuftragsNr": 2, "adding": 3}
+        self.pattern = {"pattern": r"(\d\d-\d{6})", "AuftragsNr": 1,}    #(.*\\)(\d\d-\d{6})([\w\d\s]*)(\\.*)?
 
     def scan(self, path):
+        i = 0
         for filename in glob.iglob(path + '**/**/', recursive=True):
             if os.path.isdir(filename):
-                m = re.search(self.pattern["pattern"], filename)
+                dirname = os.path.basename(os.path.normpath(filename)) # name des letzten ordners
+                m = re.search(self.pattern["pattern"], dirname)
                 if m is not None:
-                    print(m.group(self.pattern["AuftragsNr"]))
-                    self.dict[m.group(self.pattern["AuftragsNr"])] = m.group(self.pattern["pfad"]) \
-                                                            + m.group(self.pattern["AuftragsNr"]) \
-                                                            + m.group(self.pattern["adding"])
+                    nr = m.group(self.pattern["AuftragsNr"])
+                    print("{}%, {}".format(round(100/self.__EstimateSize*i, 2), nr))
+                    self.dict[nr] = filename
+            i += 1
 
     def getpath(self, key):
         if key in self.dict.keys():
@@ -41,8 +45,11 @@ class DirectoryIndex:
 if __name__ == "__main__":
     myDi = DirectoryIndex()
     mypath = r"P:\01a Verkauf\04 Aufträge"
-    #myDi.scan(mypath)
-    #myDi.save2json()
-    myDi.loadjson()
+    #mypath = r"C:\Users\franz.hidber\Desktop\Kunde\Test\10-114459 - Spezial"
+
+    myDi.scan(mypath)
     myDi.save2json()
-    print(myDi.getpath("10-113246"))
+    #myDi.loadjson()
+
+    print("Test:")
+    print("{} liegt hier: {}".format("10-113246", myDi.getpath("10-113246")))
